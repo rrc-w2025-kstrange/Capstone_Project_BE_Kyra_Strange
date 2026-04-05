@@ -1,0 +1,5 @@
+node_modules/
+dist/
+
+# Firebase service key
+servicekey.json
