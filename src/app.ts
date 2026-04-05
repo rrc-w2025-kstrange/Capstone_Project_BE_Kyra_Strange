@@ -7,7 +7,7 @@ const app: Express = express();
 app.use(express.json());
 
 // Route handler
-app.use("/api/v1/events", artistsRoutes); 
+app.use("/api/v1/artists", artistsRoutes); 
 
 // Define a route
 app.get("/api/v1/health", (req, res) => {
