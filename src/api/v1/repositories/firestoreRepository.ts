@@ -12,7 +12,7 @@ export const addArtist = async (artist: CreateArtistRequest): Promise<ArtistDTO>
         const counterDoc = await transaction.get(counterRef);
         const currentCount = counterDoc.exists ? counterDoc.data()?.count : 0;
         const nextCount = currentCount + 1;
-        const customId = `evt_${nextCount.toString().padStart(6, '0')}`;
+        const customId = `artist_${nextCount.toString().padStart(3, '0')}`;
         const docRef = artistsCollection.doc(customId);
 
         const artistEntity: ArtistDTO = {
@@ -32,32 +32,29 @@ export const addArtist = async (artist: CreateArtistRequest): Promise<ArtistDTO>
 };
 
 
-// export const getEventById = async (id: string): Promise<Event | undefined> => {
-//     const docRef: DocumentReference = db.collection("Events").doc(id);
+export const getArtistById = async (id: string): Promise<ArtistDTO | undefined> => {
+    const docRef: DocumentReference = db.collection("Artists").doc(id);
 
-//     // Use the `get()` method to retrieve the document
-//     const doc = await docRef.get();
+    // Use the `get()` method to retrieve the document
+    const doc = await docRef.get();
 
-//     // Check if the document exists
-//     if (doc.exists) {
-//         // `doc.data()` returns an object with all fields in the document
-//         let data = doc.data();
+    // Check if the document exists
+    if (doc.exists) {
+        // `doc.data()` returns an object with all fields in the document
+        let data = doc.data();
 
-//         return {
-//           id: doc.id,
-//           name: data!.name,
-//           date: typeof data!.date.toDate === 'function' ? data!.date.toDate().toISOString() : data!.date,
-//           capacity: data!.capacity,
-//           registrationCount: data!.registrationCount,
-//           status: data!.status,
-//           category: data!.category,
-//           createdAt: data!.createdAt.toDate().toISOString(),
-//           updatedAt: data!.updatedAt.toDate().toISOString(),
-//         } as Event;
-//       } else {
-//         console.log("No such document!");
-//     }
-// };
+        return {
+          id: doc.id,
+          name: data!.name,
+          status: data!.status,
+          category: data!.category,
+          createdAt: data!.createdAt.toDate().toISOString(),
+          updatedAt: data!.updatedAt.toDate().toISOString(),
+        } as ArtistDTO;
+      } else {
+        console.log("No such artist!");
+    }
+};
 
 
 // export const getAllEvents = async (): Promise<Array<EventDTO> | undefined> => {

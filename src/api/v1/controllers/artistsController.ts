@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 // import { getAllArtistsService, getArtistByIdService, createNewArtist, updateArtistById, deleteArtistById } from "../services/artistsService";
-import { createNewArtist } from "../services/artistsService";
+import { createNewArtist, getArtistByIdService } from "../services/artistsService";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
 import { successResponse } from "../models/responseModel";
 import { CreateArtistRequest } from "../models/createArtistRequestModel";
@@ -22,16 +22,16 @@ import { CreateArtistRequest } from "../models/createArtistRequestModel";
 //     }
 // }
 
-// export const getArtistById = async (req: Request, res: Response) => {
-//     try {
-//         let id = req.params.id;
-//         let results = await getArtistByIdService(id);
+export const getArtistById = async (req: Request, res: Response) => {
+    try {
+        let id = req.params.id;
+        let results = await getArtistByIdService(id);
 
-//         res.status(HTTP_STATUS.OK).json(successResponse(results, "Artist retrieved"));
-//     } catch (error) {
-//         res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Artist not found"});
-//     }
-// }
+        res.status(HTTP_STATUS.OK).json(successResponse(results, "Artist retrieved"));
+    } catch (error) {
+        res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Artist not found"});
+    }
+}
 
 export const createArtist = async (req: Request, res: Response): Promise<void> => {
     try {

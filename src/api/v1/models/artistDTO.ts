@@ -1,8 +1,8 @@
 export interface ArtistDTO {
-    id: string;
-    name: string;
-    status: string;
-    category: string;
-    createdAt: Date;
-    updatedAt: Date;
+    id: string | undefined;
+    name: string | undefined;
+    status: string | undefined;
+    category: string | undefined;
+    createdAt: Date | undefined;
+    updatedAt: Date | undefined;
 }
