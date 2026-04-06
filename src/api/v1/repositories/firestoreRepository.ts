@@ -93,15 +93,17 @@ export const getArtistById = async (id: string): Promise<ArtistDTO | undefined> 
 // };
 
 
-// export const updateEvent = async (id: string, artist: EventCreateRequest): Promise<void> => {
-//     const docRef: DocumentReference = db.collection("Artists").doc(id);
+export const updateArtist = async (id: string, artist: CreateArtistRequest): Promise<void> => {
+    const docRef: DocumentReference = db.collection("Artists").doc(id);
 
-//     await docRef.update({
-//         name: artist.name,
-//         updatedAt: new Date(),
-//     });
-//     return;
-// };
+    await docRef.update({
+        name: artist.name,
+        status: artist.status,
+        category: artist.category,
+        updatedAt: new Date(),
+    });
+    return;
+};
 
 
 // export const deleteEvent = async (id: string): Promise<void> => {
