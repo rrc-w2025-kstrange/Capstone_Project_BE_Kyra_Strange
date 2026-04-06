@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { 
+    getAllArtists,
     getArtistById,
     createArtist,
     updateArtist,
@@ -8,9 +9,9 @@ import {
 
 const router: Router = Router();
 
-router.post('/', createArtist);
-// router.get('/', getAllArtists);
+router.get('/', getAllArtists);
 router.get('/:id', getArtistById);
+router.post('/', createArtist);
 router.put('/:id', updateArtist);
 // router.delete('/:id', deleteArtist);
 
