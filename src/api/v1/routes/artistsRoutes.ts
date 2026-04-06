@@ -4,6 +4,7 @@ import {
     getArtistById,
     createArtist,
     updateArtist,
+    deleteArtist
 } from '../controllers/artistsController';
 
 
@@ -13,6 +14,6 @@ router.get('/', getAllArtists);
 router.get('/:id', getArtistById);
 router.post('/', createArtist);
 router.put('/:id', updateArtist);
-// router.delete('/:id', deleteArtist);
+router.delete('/:id', deleteArtist);
 
 export default router;
