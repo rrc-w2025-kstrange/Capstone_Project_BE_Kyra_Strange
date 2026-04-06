@@ -106,8 +106,8 @@ export const updateArtist = async (id: string, artist: CreateArtistRequest): Pro
 };
 
 
-// export const deleteEvent = async (id: string): Promise<void> => {
-//     const docRef: DocumentReference = db.collection("Artists").doc(id);
+export const deleteArtist = async (id: string): Promise<void> => {
+    const docRef: DocumentReference = db.collection("Artists").doc(id);
 
-//     await docRef.delete();
-// };
+    await docRef.delete();
+};
