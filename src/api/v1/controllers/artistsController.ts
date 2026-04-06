@@ -72,7 +72,7 @@ export const deleteArtist = async (req: Request, res: Response) => {
         let id: string = req.params.id;
         await deleteArtistById(id); 
         
-        res.status(HTTP_STATUS.OK).json({ message: `Artist ${id} was deleted` });
+        res.status(HTTP_STATUS.OK).json({ message: `${id} was deleted` });
     } catch (error: any) {
         res.status(HTTP_STATUS.NOT_FOUND).json({ 
             message: "Artist not found" 
