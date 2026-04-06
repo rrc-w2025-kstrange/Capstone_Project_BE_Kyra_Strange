@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { getAllArtistsService, getArtistByIdService, createNewArtist, updateArtistById, deleteArtistById } from "../services/artistsService";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
-
+import { successResponse } from "../models/responseModel";
+import { CreateArtistRequest } from "../models/createArtistRequestModel";
 
 
 export const getAllArtists = async (req: Request, res: Response) => {
@@ -33,7 +34,7 @@ export const getArtistById = async (req: Request, res: Response) => {
 
 export const createArtist = async (req: Request, res: Response): Promise<void> => {
     try {
-        const result = await createNewArtist(req.body as ArtistCreateRequest);
+        const result = await createNewArtist(req.body as CreateArtistRequest);
 
         res.status(HTTP_STATUS.CREATED).json({
             message: "Artist created", 
