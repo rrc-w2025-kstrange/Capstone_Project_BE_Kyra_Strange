@@ -1,5 +1,5 @@
 // import { addArtist, getArtistById, getAllArtists, updateEvent, deleteEvent } from "../repositories/firestoreRepository";
-import { addArtist, getArtistById } from "../repositories/firestoreRepository";
+import { addArtist, getArtistById, updateArtist } from "../repositories/firestoreRepository";
 // import { validateRequest } from "../middleware/validate";
 import { CreateArtistRequest } from "../models/createArtistRequestModel";
 import { ArtistDTO } from "../models/artistDTO";
@@ -32,11 +32,11 @@ export const createNewArtist = async (artist: CreateArtistRequest): Promise<Arti
 };
 
 
-// export const updateArtistById = async (id: string, artist: CreateArtistRequest): Promise<void> => {
-//     // Logic to update an item in the database
-//     await updateArtist(id, artist);
-//     return;
-// };
+export const updateArtistById = async (id: string, artist: CreateArtistRequest): Promise<void> => {
+    // Logic to update an item in the database
+    await updateArtist(id, artist);
+    return;
+};
 
 
 // export const deleteArtistById = async (id: string): Promise<void> => {
