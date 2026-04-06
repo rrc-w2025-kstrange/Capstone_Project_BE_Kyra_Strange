@@ -1,26 +1,26 @@
 import { Request, Response } from "express";
 // import { getAllArtistsService, getArtistByIdService, createNewArtist, updateArtistById, deleteArtistById } from "../services/artistsService";
-import { createNewArtist, getArtistByIdService, updateArtistById } from "../services/artistsService";
+import { createNewArtist, getArtistByIdService, updateArtistById, getAllArtistsService } from "../services/artistsService";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
 import { successResponse } from "../models/responseModel";
 import { CreateArtistRequest } from "../models/createArtistRequestModel";
 
 
-// export const getAllArtists = async (req: Request, res: Response) => {
-//     try {
-//         const artists = await getAllArtistsService();
+export const getAllArtists = async (req: Request, res: Response) => {
+    try {
+        const artists = await getAllArtistsService();
 
-//         res.status(HTTP_STATUS.OK).json({
-//             message: "Artists retrieved",
-//             count: artists?.length || 0,
-//             data: artists
-//         });
-//     } catch (error) {
-//         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ 
-//             message: "Internal Server Error" 
-//         });
-//     }
-// }
+        res.status(HTTP_STATUS.OK).json({
+            message: "Artists retrieved",
+            count: artists?.length || 0,
+            data: artists
+        });
+    } catch (error) {
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ 
+            message: "Internal Server Error" 
+        });
+    }
+}
 
 export const getArtistById = async (req: Request, res: Response) => {
     try {
