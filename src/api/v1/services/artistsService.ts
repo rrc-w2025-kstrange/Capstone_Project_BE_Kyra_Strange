@@ -1,5 +1,6 @@
 // import { addArtist, getArtistById, getAllArtists, updateEvent, deleteEvent } from "../repositories/firestoreRepository";
 // import { validateRequest } from "../middleware/validate";
+import { CreateArtistRequest } from "../models/createArtistRequestModel";
 import { ArtistDTO } from "../models/artistDTO";
 
 
