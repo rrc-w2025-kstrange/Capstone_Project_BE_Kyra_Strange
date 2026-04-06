@@ -4,6 +4,41 @@ import { ArtistDTO } from "../models/artistDTO";
 import { CreateArtistRequest } from "../models/createArtistRequestModel";
 
 
+
+export const getAllArtists = async (): Promise<Array<ArtistDTO> | undefined> => {
+    try {
+        const snapshot: QuerySnapshot = await db.collection("Artists").orderBy("createdAt", "asc").get();
+        const artists: ArtistDTO[] = [];
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            
+            const formatSafeDate = (dateAny: any) => {
+                if (dateAny && typeof dateAny.toDate === 'function') {
+                    return dateAny.toDate().toISOString();
+                }
+                return new Date(dateAny).toISOString();
+            };
+
+            artists.push({
+                id: doc.id,
+                name: data.name,
+                status: data.status,
+                category: data.category,
+                createdAt: formatSafeDate(data.createdAt),
+                updatedAt: formatSafeDate(data.updatedAt),
+            });
+        });
+
+        return artists;
+    } catch (error) {
+        console.error("Repository Error in getAllArtists:", error);
+        return []; 
+    }
+};
+
+
+
 export const addArtist = async (artist: CreateArtistRequest): Promise<ArtistDTO> => {
     const counterRef = db.collection("metadata").doc("artistsCounter");
     const artistsCollection = db.collection("Artists");
@@ -56,41 +91,6 @@ export const getArtistById = async (id: string): Promise<ArtistDTO | undefined> 
     }
 };
 
-
-// export const getAllEvents = async (): Promise<Array<EventDTO> | undefined> => {
-//     try {
-//         const snapshot: QuerySnapshot = await db.collection("Artists").orderBy("createdAt", "asc").get();
-//         const artists: EventDTO[] = [];
-
-//         snapshot.forEach((doc) => {
-//             const data = doc.data();
-            
-//             const formatSafeDate = (dateAny: any) => {
-//                 if (dateAny && typeof dateAny.toDate === 'function') {
-//                     return dateAny.toDate().toISOString();
-//                 }
-//                 return new Date(dateAny).toISOString();
-//             };
-
-//             artists.push({
-//                 id: doc.id,
-//                 name: data.name,
-//                 date: formatSafeDate(data.date), 
-//                 capacity: data.capacity,
-//                 registrationCount: data.registrationCount,
-//                 status: data.status,
-//                 category: data.category,
-//                 createdAt: formatSafeDate(data.createdAt),
-//                 updatedAt: formatSafeDate(data.updatedAt),
-//             });
-//         });
-
-//         return artists;
-//     } catch (error) {
-//         console.error("Repository Error in getAllEvents:", error);
-//         return []; 
-//     }
-// };
 
 
 export const updateArtist = async (id: string, artist: CreateArtistRequest): Promise<void> => {
