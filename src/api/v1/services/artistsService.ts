@@ -1,15 +1,15 @@
 // import { addArtist, getArtistById, getAllArtists, updateEvent, deleteEvent } from "../repositories/firestoreRepository";
-import { addArtist, getArtistById, updateArtist } from "../repositories/firestoreRepository";
+import { addArtist, getArtistById, updateArtist, getAllArtists } from "../repositories/firestoreRepository";
 // import { validateRequest } from "../middleware/validate";
 import { CreateArtistRequest } from "../models/createArtistRequestModel";
 import { ArtistDTO } from "../models/artistDTO";
 
 
 
-// export const getAllArtistsService = async (): Promise<Array<ArtistDTO> | undefined> => {
-//     // Logic to process all items from the database
-//     return await getAllArtists();
-// };
+export const getAllArtistsService = async (): Promise<Array<ArtistDTO> | undefined> => {
+    // Logic to process all items from the database
+    return await getAllArtists();
+};
 
 
 
