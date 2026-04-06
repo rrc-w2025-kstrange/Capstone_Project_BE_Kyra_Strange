@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-// import { getAllArtistsService, getArtistByIdService, createNewArtist, updateArtistById, deleteArtistById } from "../services/artistsService";
-import { createNewArtist, getArtistByIdService, updateArtistById, getAllArtistsService } from "../services/artistsService";
+import { getAllArtistsService, getArtistByIdService, createNewArtist, updateArtistById, deleteArtistById } from "../services/artistsService";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
 import { successResponse } from "../models/responseModel";
 import { CreateArtistRequest } from "../models/createArtistRequestModel";
@@ -68,15 +67,15 @@ export const updateArtist = async (req: Request, res: Response): Promise<any> =>
     }
 };
 
-// export const deleteArtist = async (req: Request, res: Response) => {
-//     try {
-//         let id: string = req.params.id;
-//         await deleteArtistById(id); 
+export const deleteArtist = async (req: Request, res: Response) => {
+    try {
+        let id: string = req.params.id;
+        await deleteArtistById(id); 
         
-//         res.status(HTTP_STATUS.OK).json({ message: `Artist ${id} was deleted` });
-//     } catch (error: any) {
-//         res.status(HTTP_STATUS.NOT_FOUND).json({ 
-//             message: "Artist not found" 
-//         });
-//     }
-// };
+        res.status(HTTP_STATUS.OK).json({ message: `Artist ${id} was deleted` });
+    } catch (error: any) {
+        res.status(HTTP_STATUS.NOT_FOUND).json({ 
+            message: "Artist not found" 
+        });
+    }
+};
