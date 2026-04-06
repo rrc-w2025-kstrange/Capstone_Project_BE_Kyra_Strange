@@ -1,5 +1,4 @@
-// import { addArtist, getArtistById, getAllArtists, updateEvent, deleteEvent } from "../repositories/firestoreRepository";
-import { addArtist, getArtistById, updateArtist, getAllArtists } from "../repositories/firestoreRepository";
+import { addArtist, getArtistById, updateArtist, getAllArtists, deleteArtist } from "../repositories/firestoreRepository";
 // import { validateRequest } from "../middleware/validate";
 import { CreateArtistRequest } from "../models/createArtistRequestModel";
 import { ArtistDTO } from "../models/artistDTO";
@@ -39,12 +38,12 @@ export const updateArtistById = async (id: string, artist: CreateArtistRequest):
 };
 
 
-// export const deleteArtistById = async (id: string): Promise<void> => {
-//     const existing = await getArtistById(id);
+export const deleteArtistById = async (id: string): Promise<void> => {
+    const existing = await getArtistById(id);
     
-//     if (!existing) {
-//         throw new Error("Not Found");
-//     }
+    if (!existing) {
+        throw new Error("Not Found");
+    }
 
-//     await deleteArtist(id);
-// };
+    await deleteArtist(id);
+};
