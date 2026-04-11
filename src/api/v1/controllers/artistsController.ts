@@ -25,7 +25,12 @@ export const getArtistById = async (req: Request, res: Response) => {
     try {
         let id = req.params.id;
         let results = await getArtistByIdService(id);
-
+        
+        if (!results.id) {                                                        
+            res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Artist not found" });
+            return;   
+        } 
+        
         res.status(HTTP_STATUS.OK).json(successResponse(results, "Artist retrieved"));
     } catch (error) {
         res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Artist not found"});
