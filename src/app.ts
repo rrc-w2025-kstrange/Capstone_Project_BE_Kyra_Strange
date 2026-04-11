@@ -1,10 +1,13 @@
 import express, { Express } from "express";
+import artistsRoutes from "./api/v1/routes/artistsRoutes";
 
 // Initialize Express application
 const app: Express = express();
 
 app.use(express.json());
 
+// Route handler
+app.use("/api/v1/artists", artistsRoutes); 
 
 // Define a route
 app.get("/api/v1/health", (req, res) => {
