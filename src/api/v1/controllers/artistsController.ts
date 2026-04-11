@@ -30,10 +30,10 @@ export const getArtistById = async (req: Request, res: Response) => {
             res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Artist not found" });
             return;   
         } 
-        
+
         res.status(HTTP_STATUS.OK).json(successResponse(results, "Artist retrieved"));
     } catch (error) {
-        res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Artist not found"});
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
     }
 }
 
