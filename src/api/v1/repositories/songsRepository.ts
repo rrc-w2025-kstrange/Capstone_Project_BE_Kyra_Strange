@@ -75,7 +75,7 @@ export const addSong = async (song: CreateSongRequest): Promise<SongDTO> => {
 };
 
 
-export const updateAlbum = async (id: string, song: CreateSongRequest): Promise<void> => {
+export const updateSong = async (id: string, song: CreateSongRequest): Promise<void> => {
     const docRef: DocumentReference = db.collection("Songs").doc(id);
     await docRef.update({
         title: song.title,
