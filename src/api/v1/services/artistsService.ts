@@ -1,4 +1,4 @@
-import { addArtist, getArtistById, updateArtist, getAllArtists, deleteArtist } from "../repositories/firestoreRepository";
+import { addArtist, getArtistById, updateArtist, getAllArtists, deleteArtist } from "../repositories/artistsRepository";
 // import { validateRequest } from "../middleware/validate";
 import { CreateArtistRequest } from "../models/createArtistRequestModel";
 import { ArtistDTO } from "../models/artistDTO";
