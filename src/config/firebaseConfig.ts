@@ -11,5 +11,6 @@ initializeApp({
 // Get a reference to the Firestore service
 // This creates a Firestore instance that you can use to interact with your database
 const db: Firestore = getFirestore();
+db.settings({ ignoreUndefinedProperties: true }); 
 
 export { db };
