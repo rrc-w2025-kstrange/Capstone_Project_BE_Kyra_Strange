@@ -75,3 +75,30 @@ export const deleteSong = async (req: Request, res: Response) => {
         res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Song not found' });
     }
 };
+
+
+export const uploadSongFile = async (req: Request, res: Response): Promise<void> => {
+    try {
+        if (!req.file) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "No file uploaded" });
+            return;
+        }
+
+        // req.file is provided by Multer, it contains info about the uploaded file
+        res.status(HTTP_STATUS.CREATED).json({
+            message: "File uploaded successfully",
+            data: {
+                filename: req.file.filename,      
+                originalname: req.file.originalname, 
+                size: req.file.size,               
+                path: req.file.path                
+            }
+        });
+    } catch (error: any) {
+        if (error.message?.includes("Only MP3")) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({ message: error.message });
+            return;
+        }
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Upload failed" });
+    }
+};
