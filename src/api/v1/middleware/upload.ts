@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 
 // Validate file type and size
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-    const allowedTypes = [".mp3", ".wav", ".aac"];
+    const allowedTypes = [".mp3", ".wav", ".aac", ".mp4"];
     const ext = path.extname(file.originalname).toLowerCase();
 
     if (allowedTypes.includes(ext)) {
