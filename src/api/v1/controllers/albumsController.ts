@@ -62,7 +62,7 @@ export const updateAlbum = async (req: Request, res: Response): Promise<any> => 
 
         return res.status(HTTP_STATUS.OK).json(updated);
     } catch (error) {
-        return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Album not found' });
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
     }
 };
 
