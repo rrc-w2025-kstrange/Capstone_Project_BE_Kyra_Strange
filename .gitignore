@@ -3,3 +3,5 @@ dist/
 
 # Firebase service key
 servicekey.json
+
+uploads/
