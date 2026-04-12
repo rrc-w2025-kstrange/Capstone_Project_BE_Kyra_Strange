@@ -77,12 +77,18 @@ export const addSong = async (song: CreateSongRequest): Promise<SongDTO> => {
 
 export const updateSong = async (id: string, song: CreateSongRequest): Promise<void> => {
     const docRef: DocumentReference = db.collection("Songs").doc(id);
-    await docRef.update({
+    const updateData: any = {
         title: song.title,
         albumId: song.albumId,
         duration: song.duration,
         updatedAt: new Date(),
-    });
+    };
+
+    if (song.filePath) {
+        updateData.filePath = song.filePath;  // only added if it exists
+    }
+
+    await docRef.update(updateData);
 };
 
 
