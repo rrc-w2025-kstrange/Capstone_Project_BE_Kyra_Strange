@@ -43,10 +43,12 @@ export const createSong = async (req: Request, res: Response): Promise<void> => 
             message: "Song created",
             data: result
         });
-    } catch (error) {
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-            message: "Failed to create Song"
-        });
+    } catch (error: any) {
+        if (error.message === "Album not found") {
+            res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Album not found" });
+            return;
+        }
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Failed to create Song" });
     }
 };
 
