@@ -75,3 +75,42 @@ export const deleteSong = async (req: Request, res: Response) => {
         res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Song not found' });
     }
 };
+
+
+export const uploadSongFile = async (req: Request, res: Response): Promise<void> => {
+    try {
+        if (!req.file) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "No file uploaded" });
+            return;
+        }
+
+        const songId = req.body.songId;
+
+        if (!songId) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "songId is required" });
+            return;
+        }
+
+        const filePath = `http://localhost:3000/uploads/${req.file.filename}`;  
+
+        await updateSongById(songId, { filePath } as any);
+
+        // req.file is provided by Multer, it contains info about the uploaded file
+        res.status(HTTP_STATUS.CREATED).json({
+            message: "File uploaded and linked to song",
+            data: {
+                songId,
+                filename: req.file.filename,      
+                originalname: req.file.originalname, 
+                size: req.file.size,               
+                path: `http://localhost:3000/uploads/${req.file.filename}`                
+            }
+        });
+    } catch (error: any) {
+        if (error.message?.includes("Only MP3")) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({ message: error.message });
+            return;
+        }
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Upload failed" });
+    }
+};
