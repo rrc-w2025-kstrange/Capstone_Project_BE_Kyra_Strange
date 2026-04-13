@@ -97,13 +97,13 @@ export const uploadSongFile = async (req: Request, res: Response): Promise<void>
 
         // req.file is provided by Multer, it contains info about the uploaded file
         res.status(HTTP_STATUS.CREATED).json({
-            message: "File uploaded successfully",
+            message: "File uploaded and linked to song",
             data: {
                 songId,
                 filename: req.file.filename,      
                 originalname: req.file.originalname, 
                 size: req.file.size,               
-                path: filePath                
+                path: `http://localhost:3000/uploads/${req.file.filename}`                
             }
         });
     } catch (error: any) {
