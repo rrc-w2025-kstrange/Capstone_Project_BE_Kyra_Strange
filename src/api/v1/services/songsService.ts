@@ -1,4 +1,5 @@
 import { getAllSongs, getSongById, addSong, updateSong, deleteSong } from "../repositories/songsRepository";
+import { getAlbumById } from "../repositories/albumsRepository";
 import { CreateSongRequest } from "../models/createSongRequestModel";
 import { SongDTO } from "../models/songDTO";
 
@@ -11,6 +12,12 @@ export const getSongByIdService = async (id: string): Promise<SongDTO | undefine
 };
 
 export const createNewSong = async (song: CreateSongRequest): Promise<SongDTO> => {
+    const albumExists = await getAlbumById(song.albumId);  
+
+    if (!albumExists) {                                     
+        throw new Error("Album not found");                 
+    } 
+    
     return await addSong(song);
 };
 
