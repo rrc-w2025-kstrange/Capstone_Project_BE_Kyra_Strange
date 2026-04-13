@@ -91,7 +91,7 @@ export const uploadSongFile = async (req: Request, res: Response): Promise<void>
             return;
         }
 
-        const filePath = req.file.path;
+        const filePath = `http://localhost:3000/uploads/${req.file.filename}`;  
 
         await updateSongById(songId, { filePath } as any);
 
