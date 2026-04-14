@@ -7,10 +7,13 @@ const storage = multer.diskStorage({
         cb(null, "uploads/");            // files will be saved in an /uploads folder
     },
     filename: (req, file, cb) => {
-        const unique = Date.now().toString().slice(-4); 
-        cb(null, unique + "-" + file.originalname);  
-    }
-});
+        const unique = Date.now();
+        const safeName = file.originalname
+            .replace(/\s+/g, "-")     
+            .replace(/[^\w.-]/g, "");
+
+        cb(null, `${unique}-${safeName}`);
+}});
 
 // Validate file type and size
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
