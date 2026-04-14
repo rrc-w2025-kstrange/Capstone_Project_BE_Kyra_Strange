@@ -6,13 +6,15 @@ import {
     updateAlbum,
     deleteAlbum
 } from '../controllers/albumsController';
+import { validateRequest } from '../middleware/validate';
+import { albumSchemas } from '../validation/Schema';
 
 const router: Router = Router();
 
 router.get('/', getAllAlbums);
-router.get('/:id', getAlbumById);
-router.post('/', createAlbum);
-router.put('/:id', updateAlbum);
-router.delete('/:id', deleteAlbum);
+router.get('/:id', validateRequest(albumSchemas.getById), getAlbumById);
+router.post('/', validateRequest(albumSchemas.create), createAlbum);
+router.put('/:id', validateRequest(albumSchemas.update), updateAlbum);
+router.delete('/:id', validateRequest(albumSchemas.delete), deleteAlbum);
 
 export default router;
