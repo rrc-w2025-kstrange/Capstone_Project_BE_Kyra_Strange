@@ -24,7 +24,7 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
     }
 };
 
-// Export the configured upload handler
+// Combines storage and fileFilter into one final configuration and adds a size limit
 const upload = multer({
     storage,
     fileFilter,
