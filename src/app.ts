@@ -1,10 +1,13 @@
 import express, { Express } from "express";
+import morgan from "morgan";
 import artistsRoutes from "./api/v1/routes/artistsRoutes";
 import albumsRoutes from './api/v1/routes/albumsRoutes';
 import songsRoutes from './api/v1/routes/songsRoutes';
 
 // Initialize Express application
 const app: Express = express();
+
+app.use(morgan("combined"));
 
 app.use(express.json());
 
