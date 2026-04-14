@@ -109,7 +109,7 @@ export const uploadSongFile = async (req: Request, res: Response): Promise<void>
             }
         });
     } catch (error: any) {
-        if (error.message?.includes("Only MP3")) {
+        if (error.message?.includes("Only MP3, .m4a, or MP4")) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({ message: error.message });
             return;
         }
