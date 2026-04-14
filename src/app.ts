@@ -1,13 +1,26 @@
 import express, { Express } from "express";
-import morgan from "morgan";
 import artistsRoutes from "./api/v1/routes/artistsRoutes";
 import albumsRoutes from './api/v1/routes/albumsRoutes';
 import songsRoutes from './api/v1/routes/songsRoutes';
+import {
+    accessLogger,
+    errorLogger,
+    consoleLogger,
+} from "./api/v1/middleware/logger";
+import errorHandler from "./api/v1/middleware/errorHandler";
 
 // Initialize Express application
 const app: Express = express();
 
-app.use(morgan("combined"));
+// Logging middleware 
+if (process.env.NODE_ENV === "production") {
+    // In production, log to files
+    app.use(accessLogger);
+    app.use(errorLogger);
+} else {
+    // In development, log to console for immediate feedback
+    app.use(consoleLogger);
+}
 
 app.use(express.json());
 
@@ -26,5 +39,8 @@ app.get("/api/v1/health", (req, res) => {
         version: "1.0.0",
     });
 });
+
+// Global error handling middleware
+app.use(errorHandler);
 
 export default app;
