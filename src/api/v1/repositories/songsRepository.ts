@@ -40,6 +40,7 @@ export const getSongById = async (id: string): Promise<SongDTO | undefined> => {
             title: data!.title,
             albumId: data!.albumId,
             duration: data!.duration,
+            filePath: data!.filePath,
             createdAt: data!.createdAt.toDate().toISOString(),
             updatedAt: data!.updatedAt.toDate().toISOString(),
         } as SongDTO;
