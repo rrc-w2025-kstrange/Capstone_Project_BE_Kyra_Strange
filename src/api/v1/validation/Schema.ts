@@ -123,8 +123,11 @@ export const songSchemas = {
             albumId: Joi.string().required().messages({
                 "any.required": 'Validation error: "albumId" is required',
             }),
-            duration: Joi.number().integer().min(1).optional().messages({
-                "number.min": 'Validation error: "duration" must be at least 1 second',
+            duration: Joi.number().integer().min(30).max(15 * 60).optional().messages({
+                "number.base": 'Validation error: "duration" must be a number (seconds)',
+                "number.integer": 'Validation error: "duration" must be a whole number',
+                "number.min": 'Validation error: "duration" must be at least 30 seconds',
+                "number.max": 'Validation error: "duration" must be less than or equal to 900 seconds (15 minutes)',
             }),
         }),
     },
@@ -148,7 +151,12 @@ export const songSchemas = {
         body: Joi.object({
             title: Joi.string().min(1).optional(),
             albumId: Joi.string().optional(),
-            duration: Joi.number().integer().min(1).optional(),
+            duration: Joi.number().integer().min(30).max(15 * 60).optional().messages({
+                "number.base": 'Validation error: "duration" must be a number (seconds)',
+                "number.integer": 'Validation error: "duration" must be a whole number',
+                "number.min": 'Validation error: "duration" must be at least 30 seconds',
+                "number.max": 'Validation error: "duration" must be less than or equal to 900 seconds (15 minutes)',
+            }),
         }).min(1),
     },
 
