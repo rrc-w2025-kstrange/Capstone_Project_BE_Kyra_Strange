@@ -16,6 +16,7 @@ export const getAllSongs = async (): Promise<Array<SongDTO> | undefined> => {
                 title: data.title,
                 albumId: data.albumId,
                 duration: data.duration,
+                filePath: data.filePath,
                 createdAt: data.createdAt?.toDate?.().toISOString() ?? data.createdAt,
                 updatedAt: data.updatedAt?.toDate?.().toISOString() ?? data.updatedAt,
             });
