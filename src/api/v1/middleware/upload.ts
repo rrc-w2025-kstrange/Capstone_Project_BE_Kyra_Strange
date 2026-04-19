@@ -22,6 +22,12 @@ const allowedMimeTypes = {
     ".mp4": "video/mp4",
 };
 
+const fileSizeLimits = {
+    ".mp3": 10 * 1024 * 1024,
+    ".m4a": 10 * 1024 * 1024,
+    ".mp4": 100 * 1024 * 1024,
+};
+
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const expectedMime = allowedMimeTypes[ext as keyof typeof allowedMimeTypes];
@@ -34,6 +40,7 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
         return cb(new Error(`File looks suspicious. Expected ${expectedMime} but got ${file.mimetype}`));
     }
 
+    req.fileSizeLimit = fileSizeLimits[ext as keyof typeof fileSizeLimits];
     cb(null, true);
 };
 
@@ -41,7 +48,7 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
 const upload = multer({
     storage,
     fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 }  // 5MB max
+    limits: { fileSize: 100 * 1024 * 1024 }  
 });
 
 export default upload;
