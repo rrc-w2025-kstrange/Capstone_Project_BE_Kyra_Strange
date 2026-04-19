@@ -3,7 +3,7 @@ export interface SongDTO {
     title: string | undefined;
     albumId: string | undefined;    
     duration: number | undefined;
-    filePath: string | undefined;   
+    filePath?: string | undefined;   
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
 }
