@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { getAllSongsService, getSongByIdService, createNewSong, updateSongById, deleteSongById } from "../services/songsService";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
 import { CreateSongRequest } from "../models/createSongRequestModel";
+import { fromFile } from "file-type";
+import fs from "fs";                          
 
 export const getAllSongs = async (req: Request, res: Response) => {
     try {
@@ -90,6 +92,15 @@ export const uploadSongFile = async (req: Request, res: Response): Promise<void>
 
         if (!songId) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "songId is required" });
+            return;
+        }
+
+        const realType = await fromFile(req.file.path);
+        const allowedMimes = ["audio/mpeg", "audio/mp4", "video/mp4"];
+
+        if (!realType || !allowedMimes.includes(realType.mime)) {
+            fs.unlinkSync(req.file.path); 
+            res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "File contents do not match an allowed type" });
             return;
         }
 
