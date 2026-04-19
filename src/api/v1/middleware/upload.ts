@@ -7,12 +7,12 @@ const storage = multer.diskStorage({
         cb(null, "uploads/");            // files will be saved in an /uploads folder
     },
     filename: (req, file, cb) => {
-        const unique = Date.now();
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
         const safeName = file.originalname
             .replace(/\s+/g, "-")     
             .replace(/[^\w.-]/g, "");
 
-        cb(null, `${unique}-${safeName}`);
+        cb(null, `${timestamp}-${safeName}`);
 }});
 
 // Validate file type and size
@@ -25,7 +25,7 @@ const allowedMimeTypes = {
 const fileSizeLimits = {
     ".mp3": 10 * 1024 * 1024,
     ".m4a": 10 * 1024 * 1024,
-    ".mp4": 100 * 1024 * 1024,
+    ".mp4": 300 * 1024 * 1024,
 };
 
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
@@ -48,7 +48,7 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
 const upload = multer({
     storage,
     fileFilter,
-    limits: { fileSize: 100 * 1024 * 1024 }  
+    limits: { fileSize: 300 * 1024 * 1024 }  
 });
 
 export default upload;
