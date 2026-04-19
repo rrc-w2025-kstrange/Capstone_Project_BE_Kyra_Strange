@@ -11,11 +11,11 @@ export const artistSchemas = {
                 "string.empty": 'Validation error: "name" cannot be empty',
                 "string.min": 'Validation error: "name" must be at least 2 characters long',
             }),
-            status: Joi.string().valid("active", "inactive", "passed").default("active").messages({
-                "any.only": 'Validation error: "status" must be one of [active, inactive, passed]',
+            status: Joi.string().valid("active", "inactive", "passed away").default("active").messages({
+                "any.only": 'Validation error: "status" must be one of [active, inactive, passed away]',
             }),
-            category: Joi.string().valid("Rock", "Reggae", "Techno", "Alt", "general").default("general").messages({
-                "any.only": 'Validation error: "category" must be one of [Rock, Reggae, Techno, Alt, general]',
+            category: Joi.string().valid("Rock", "Glam Rock", "Reggae", "Techno", "Indie Rock", "general").default("general").messages({
+                "any.only": 'Validation error: "category" must be one of [Rock, Glam Rock, Reggae, Techno, Indie Rock, general]',
             }),
         }),
     },
@@ -38,8 +38,8 @@ export const artistSchemas = {
         }),
         body: Joi.object({
             name: Joi.string().min(2).optional(),
-            status: Joi.string().valid("active", "inactive", "passed").optional(),
-            category: Joi.string().valid("Rock", "Reggae", "Techno", "Alt", "general").optional(),
+            status: Joi.string().valid("active", "inactive", "passed away").optional(),
+            category: Joi.string().valid("Rock", "Glam Rock", "Reggae", "Techno", "Indie Rock", "general").optional(),
         }).min(1),  // at least one field must be sent
     },
 
@@ -70,8 +70,8 @@ export const albumSchemas = {
                 "number.min": 'Validation error: "releaseYear" must be 1900 or later',
                 "number.max": 'Validation error: "releaseYear" cannot be in the future',
             }),
-            genre: Joi.string().valid("Rock", "Reggae", "Techno", "Alt", "general").default("general").messages({
-                "any.only": 'Validation error: "genre" must be one of [Rock, Reggae, Techno, Alt, general]',
+            genre: Joi.string().valid("Rock", "Glam Rock", "Reggae", "Techno", "Indie Rock", "general").default("general").messages({
+                "any.only": 'Validation error: "genre" must be one of [Rock, Glam Rock, Reggae, Techno, Indie Rock, general]',
             }),
         }),
     },
@@ -96,7 +96,7 @@ export const albumSchemas = {
             title: Joi.string().min(1).optional(),
             artistId: Joi.string().optional(),
             releaseYear: Joi.number().integer().min(1900).max(new Date().getFullYear()).optional(),
-            genre: Joi.string().valid("Rock", "Reggae", "Techno", "Alt", "general").optional(),
+            genre: Joi.string().valid("Rock", "Glam Rock", "Reggae", "Techno", "Indie Rock", "general").optional(),
         }).min(1),
     },
 
