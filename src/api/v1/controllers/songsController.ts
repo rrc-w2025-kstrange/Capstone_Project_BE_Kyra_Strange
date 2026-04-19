@@ -43,10 +43,12 @@ export const createSong = async (req: Request, res: Response): Promise<void> => 
             message: "Song created",
             data: result
         });
-    } catch (error) {
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-            message: "Failed to create Song"
-        });
+    } catch (error: any) {
+        if (error.message === "Album not found") {
+            res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Album not found" });
+            return;
+        }
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Failed to create Song" });
     }
 };
 
@@ -107,7 +109,7 @@ export const uploadSongFile = async (req: Request, res: Response): Promise<void>
             }
         });
     } catch (error: any) {
-        if (error.message?.includes("Only MP3")) {
+        if (error.message?.includes("Only MP3, .m4a, or MP4")) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({ message: error.message });
             return;
         }

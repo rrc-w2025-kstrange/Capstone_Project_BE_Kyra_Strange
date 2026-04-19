@@ -4,4 +4,9 @@ dist/
 # Firebase service key
 servicekey.json
 
+# uploads folder containing music files
 uploads/
+
+# Logs
+logs/
+*.log
