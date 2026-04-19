@@ -28,7 +28,13 @@ app.use(express.json());
 app.use("/api/v1/artists", artistsRoutes); 
 app.use("/api/v1/albums", albumsRoutes);
 app.use("/api/v1/songs", songsRoutes);
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static("uploads", {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith(".mp4")) {
+            res.setHeader("Content-Type", "video/mp4");
+        }
+    }
+}));
 
 // Define a route
 app.get("/api/v1/health", (req, res) => {
