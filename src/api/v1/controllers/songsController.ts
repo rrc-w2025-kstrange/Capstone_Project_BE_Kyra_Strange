@@ -1,9 +1,13 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { getAllSongsService, getSongByIdService, createNewSong, updateSongById, deleteSongById } from "../services/songsService";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
 import { CreateSongRequest } from "../models/createSongRequestModel";
+import { AppError } from "../errors/errors";
+import { fromFile } from "file-type";
+import fs from "fs";                          
 
-export const getAllSongs = async (req: Request, res: Response) => {
+
+export const getAllSongs = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const songs = await getAllSongsService();
         res.status(HTTP_STATUS.OK).json({
@@ -12,13 +16,11 @@ export const getAllSongs = async (req: Request, res: Response) => {
             data: songs
         });
     } catch (error) {
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-            message: "Internal Server Error"
-        });
+        next(error);
     }
 };
 
-export const getSongById = async (req: Request, res: Response) => {
+export const getSongById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id;
         const result = await getSongByIdService(id);
@@ -30,13 +32,11 @@ export const getSongById = async (req: Request, res: Response) => {
 
         res.status(HTTP_STATUS.OK).json({ message: 'Song retrieved', data: result });
     } catch (error) {
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-            message: "Internal Server Error"
-        });
+        next(error);
     }
 };
 
-export const createSong = async (req: Request, res: Response): Promise<void> => {
+export const createSong = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const result = await createNewSong(req.body as CreateSongRequest);
         res.status(HTTP_STATUS.CREATED).json({
@@ -48,38 +48,45 @@ export const createSong = async (req: Request, res: Response): Promise<void> => 
             res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Album not found" });
             return;
         }
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Failed to create Song" });
+        next(error);
     }
 };
 
-export const updateSong = async (req: Request, res: Response): Promise<any> => {
+export const updateSong = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id = req.params.id;
         await updateSongById(id, req.body);
         const updated = await getSongByIdService(id);
 
         if (!updated) {
-            return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Song not found' });
+            res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Song not found' });
+            return;
         }
 
-        return res.status(HTTP_STATUS.OK).json(updated);
+        res.status(HTTP_STATUS.OK).json(updated);
     } catch (error) {
-        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+        next(error);
     }
 };
 
-export const deleteSong = async (req: Request, res: Response) => {
+export const deleteSong = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id;
+        const existing = await getSongByIdService(id); 
+
+        if (!existing) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Song not found' });
+            return;
+        }
+
         await deleteSongById(id);
         res.status(HTTP_STATUS.OK).json({ message: `${id} was deleted` });
     } catch (error) {
-        res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Song not found' });
+        next(error);
     }
 };
 
-
-export const uploadSongFile = async (req: Request, res: Response): Promise<void> => {
+export const uploadSongFile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         if (!req.file) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "No file uploaded" });
@@ -93,26 +100,35 @@ export const uploadSongFile = async (req: Request, res: Response): Promise<void>
             return;
         }
 
-        const filePath = `http://localhost:3000/uploads/${req.file.filename}`;  
+        const realType = await fromFile(req.file.path);
+        const allowedMimes = ["audio/mpeg", "audio/mp4", "video/mp4"];
 
-        await updateSongById(songId, { filePath } as any);
+        if (!realType || !allowedMimes.includes(realType.mime)) {
+            fs.unlinkSync(req.file.path);
+            // uses AppError so errorHandler formats it consistently
+            return next(new AppError("File contents do not match an allowed type", "INVALID_FILE", HTTP_STATUS.BAD_REQUEST));
+        }
 
-        // req.file is provided by Multer, it contains info about the uploaded file
+        const filePath = `http://localhost:3000/uploads/${req.file.filename}`;
+
+        try {
+            await updateSongById(songId, { filePath } as any);
+        } catch (error) {
+            fs.unlinkSync(req.file.path);
+            return next(new AppError("Failed to link file to song, upload cancelled", "DB_ERROR", HTTP_STATUS.INTERNAL_SERVER_ERROR));
+        }
+
         res.status(HTTP_STATUS.CREATED).json({
             message: "File uploaded and linked to song",
             data: {
                 songId,
-                filename: req.file.filename,      
-                originalname: req.file.originalname, 
-                size: req.file.size,               
-                path: `http://localhost:3000/uploads/${req.file.filename}`                
+                filename: req.file.filename,
+                originalname: req.file.originalname,
+                size: `${(req.file.size / 1024 / 1024).toFixed(2)} MB`,
+                path: filePath
             }
         });
-    } catch (error: any) {
-        if (error.message?.includes("Only MP3, .m4a, or MP4")) {
-            res.status(HTTP_STATUS.BAD_REQUEST).json({ message: error.message });
-            return;
-        }
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Upload failed" });
+    } catch (error) {
+        next(error);
     }
 };
