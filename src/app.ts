@@ -37,6 +37,8 @@ app.use("/uploads", express.static("uploads", {
         }
     }
 }));
+app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 // Define a route
 app.get("/api/v1/health", (req, res) => {
