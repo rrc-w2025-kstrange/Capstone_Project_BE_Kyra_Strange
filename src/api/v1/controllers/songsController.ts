@@ -99,24 +99,30 @@ export const uploadSongFile = async (req: Request, res: Response): Promise<void>
         const allowedMimes = ["audio/mpeg", "audio/mp4", "video/mp4"];
 
         if (!realType || !allowedMimes.includes(realType.mime)) {
-            fs.unlinkSync(req.file.path); 
+            fs.unlinkSync(req.file.path);
             res.status(HTTP_STATUS.BAD_REQUEST).json({ message: "File contents do not match an allowed type" });
             return;
         }
 
-        const filePath = `http://localhost:3000/uploads/${req.file.filename}`;  
+        const filePath = `http://localhost:3000/uploads/${req.file.filename}`;
 
-        await updateSongById(songId, { filePath } as any);
+        // If the DB update fails, delete the file so it doesn't sit orphaned on disk
+        try {
+            await updateSongById(songId, { filePath } as any);
+        } catch (error) {
+            fs.unlinkSync(req.file.path);
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Failed to link file to song, upload cancelled" });
+            return;
+        }
 
-        // req.file is provided by Multer, it contains info about the uploaded file
         res.status(HTTP_STATUS.CREATED).json({
             message: "File uploaded and linked to song",
             data: {
                 songId,
-                filename: req.file.filename,      
-                originalname: req.file.originalname, 
-                size: req.file.size,               
-                path: `http://localhost:3000/uploads/${req.file.filename}`                
+                filename: req.file.filename,
+                originalname: req.file.originalname,
+                size: `${(req.file.size / 1024 / 1024).toFixed(2)} MB`,
+                path: filePath
             }
         });
     } catch (error: any) {
