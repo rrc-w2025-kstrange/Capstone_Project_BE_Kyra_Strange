@@ -7,5 +7,4 @@ const adminRoutes: Router = Router();
 
 adminRoutes.post('/setCustomClaims', authenticate, authorize({hasRole:["admin"], allowSameUser: true}), setCustomClaims);
 
-
 export default adminRoutes;
