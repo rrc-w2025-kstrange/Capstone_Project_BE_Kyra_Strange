@@ -16,15 +16,25 @@ const storage = multer.diskStorage({
 }});
 
 // Validate file type and size
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-    const allowedTypes = [".mp3", ".m4a", ".mp4"];
-    const ext = path.extname(file.originalname).toLowerCase();
+const allowedMimeTypes = {
+    ".mp3": "audio/mpeg",
+    ".m4a": "audio/mp4",
+    ".mp4": "video/mp4",
+};
 
-    if (allowedTypes.includes(ext)) {
-        cb(null, true);         
-    } else {
-        cb(new Error("Only MP3, m4a, and MP4 files are allowed"));  
+const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const expectedMime = allowedMimeTypes[ext as keyof typeof allowedMimeTypes];
+
+    if (!expectedMime) {
+        return cb(new Error("Only .mp3, .m4a, and .mp4 files are allowed"));
     }
+
+    if (file.mimetype !== expectedMime) {
+        return cb(new Error(`File looks suspicious. Expected ${expectedMime} but got ${file.mimetype}`));
+    }
+
+    cb(null, true);
 };
 
 // Combines storage and fileFilter into one final configuration and adds a size limit
