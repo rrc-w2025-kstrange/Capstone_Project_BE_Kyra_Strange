@@ -17,15 +17,15 @@
  *           example: "artist_001"
  *         name:
  *           type: string
- *           example: "Enya"
+ *           example: "Joan Jett"
  *         status:
  *           type: string
- *           enum: [active, inactive, passed]
+ *           enum: [active, inactive, passed away]
  *           example: "active"
  *         category:
  *           type: string
- *           enum: [Rock, Reggae, Techno, Alt]
- *           example: "Alt"
+ *           enum: [Rock, Glam Rock, Reggae, Techno, Indie Rock, general]
+ *           example: "Rock"
  *         createdAt:
  *           type: string
  *           format: date-time
