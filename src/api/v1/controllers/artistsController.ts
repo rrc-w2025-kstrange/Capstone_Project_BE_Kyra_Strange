@@ -5,6 +5,12 @@ import { successResponse } from "../models/responseModel";
 import { CreateArtistRequest } from "../models/createArtistRequestModel";
 
 
+/**
+ * Retrieves all artists from the database ordered by creation date.
+ * @param req - Express request object
+ * @param res - Express response object
+ * @returns JSON response with all artists and total count
+ */
 export const getAllArtists = async (req: Request, res: Response) => {
     try {
         const artists = await getAllArtistsService();
@@ -21,6 +27,15 @@ export const getAllArtists = async (req: Request, res: Response) => {
     }
 }
 
+
+/**
+ * Retrieves a single artist by their ID.
+ * Checks for a valid id field on the result since getArtistByIdService
+ * always returns an object — an empty id indicates the artist was not found.
+ * @param req - Express request object containing `id` in params
+ * @param res - Express response object
+ * @returns JSON response with the artist data or 404 if not found
+ */
 export const getArtistById = async (req: Request, res: Response) => {
     try {
         let id = req.params.id;
@@ -37,6 +52,14 @@ export const getArtistById = async (req: Request, res: Response) => {
     }
 }
 
+
+/**
+ * Creates a new artist with the provided data.
+ * Status defaults to "active" and category defaults to "general" if not provided.
+ * @param req - Express request object containing artist data in body
+ * @param res - Express response object
+ * @returns JSON response with the created artist or 500 on failure
+ */
 export const createArtist = async (req: Request, res: Response): Promise<void> => {
     try {
         const result = await createNewArtist(req.body as CreateArtistRequest);
@@ -52,6 +75,15 @@ export const createArtist = async (req: Request, res: Response): Promise<void> =
     }
 };
 
+
+/**
+ * Updates an existing artist by ID.
+ * Checks existence before updating to return a proper 404 instead of a DB error.
+ * @param req - Express request object containing `id` in params and update fields in body
+ * @param res - Express response object
+ * @param next - Express next function for error handling
+ * @returns JSON response with the updated artist or 404 if not found
+ */
 export const updateArtist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id: string = req.params.id;
@@ -72,6 +104,13 @@ export const updateArtist = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
+
+/**
+ * Deletes an artist by ID.
+ * @param req - Express request object containing `id` in params
+ * @param res - Express response object
+ * @returns JSON response confirming deletion or 404 if not found
+ */
 export const deleteArtist = async (req: Request, res: Response) => {
     try {
         let id: string = req.params.id;
