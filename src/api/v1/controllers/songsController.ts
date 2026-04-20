@@ -7,6 +7,13 @@ import { fromFile } from "file-type";
 import fs from "fs";                          
 
 
+/**
+ * Retrieves all songs from the database ordered by creation date.
+ * @param req - Express request object
+ * @param res - Express response object
+ * @param next - Express next function for error handling
+ * @returns JSON response with all songs and total count
+ */
 export const getAllSongs = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const songs = await getAllSongsService();
@@ -20,6 +27,14 @@ export const getAllSongs = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
+
+/**
+ * Retrieves a single song by its ID.
+ * @param req - Express request object containing `id` in params
+ * @param res - Express response object
+ * @param next - Express next function for error handling
+ * @returns JSON response with the song data or 404 if not found
+ */
 export const getSongById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id;
@@ -36,6 +51,14 @@ export const getSongById = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
+
+/**
+ * Creates a new song linked to an existing album.
+ * @param req - Express request object containing song data in body
+ * @param res - Express response object
+ * @param next - Express next function for error handling
+ * @returns JSON response with the created song or 404 if album not found
+ */
 export const createSong = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const result = await createNewSong(req.body as CreateSongRequest);
@@ -52,6 +75,15 @@ export const createSong = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+
+/**
+ * Updates an existing song by ID.
+ * Checks existence before updating to return a proper 404 instead of a DB error.
+ * @param req - Express request object containing `id` in params and update fields in body
+ * @param res - Express response object
+ * @param next - Express next function for error handling
+ * @returns JSON response with the updated song or 404 if not found
+ */
 export const updateSong = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id = req.params.id;
@@ -72,6 +104,15 @@ export const updateSong = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+
+/**
+ * Deletes a song by ID.
+ * Checks existence before deleting to return a proper 404 instead of a DB error.
+ * @param req - Express request object containing `id` in params
+ * @param res - Express response object
+ * @param next - Express next function for error handling
+ * @returns JSON response confirming deletion or 404 if not found
+ */
 export const deleteSong = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id;
@@ -89,6 +130,24 @@ export const deleteSong = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+
+/**
+ * Handles uploading a media file (MP3, M4A, MP4) and linking it to an existing song.
+ *
+ * Validation:
+ * Multer fileFilter checks extension and MIME type before saving
+ * Song existence check ensures the target song exists before processing
+ * Magic bytes check reads actual file contents to prevent spoofed files
+ * DB update links the file path to the song record
+ *
+ * The uploaded file is deleted from disk if any validation or DB step fails,
+ * preventing orphaned files from accumulating in the uploads folder.
+ *
+ * @param req - Express request object containing `file` from Multer and `songId` in body
+ * @param res - Express response object
+ * @param next - Express next function for error handling
+ * @returns JSON response with upload details or appropriate error
+ */
 export const uploadSongFile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         if (!req.file) {
