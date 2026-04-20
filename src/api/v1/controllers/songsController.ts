@@ -101,7 +101,7 @@ export const uploadSongFile = async (req: Request, res: Response, next: NextFunc
         }
 
         const realType = await fromFile(req.file.path);
-        const allowedMimes = ["audio/mpeg", "audio/mp4", "video/mp4"];
+        const allowedMimes = ["audio/mpeg", "audio/mp4", "audio/x-m4a", "video/mp4"];
 
         if (!realType || !allowedMimes.includes(realType.mime)) {
             fs.unlinkSync(req.file.path);
