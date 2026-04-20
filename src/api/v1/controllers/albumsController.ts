@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { getAllAlbumsService, getAlbumByIdService, createNewAlbum, updateAlbumById, deleteAlbumById } from "../services/albumsService";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
 import { CreateAlbumRequest } from "../models/createAlbumRequestModel";
@@ -52,19 +52,23 @@ export const createAlbum = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-export const updateAlbum = async (req: Request, res: Response): Promise<any> => {
+export const updateAlbum = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id = req.params.id;
+
+        const existing = await getAlbumByIdService(id);
+
+        if (!existing) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Album not found" });
+            return;
+        }
+
         await updateAlbumById(id, req.body);
         const updated = await getAlbumByIdService(id);
 
-        if (!updated) {
-            return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Album not found' });
-        }
-
-        return res.status(HTTP_STATUS.OK).json(updated);
+        res.status(HTTP_STATUS.OK).json(updated);
     } catch (error) {
-        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+        next(error);
     }
 };
 

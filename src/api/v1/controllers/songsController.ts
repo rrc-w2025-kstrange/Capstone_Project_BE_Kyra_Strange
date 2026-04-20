@@ -55,13 +55,16 @@ export const createSong = async (req: Request, res: Response, next: NextFunction
 export const updateSong = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id = req.params.id;
-        await updateSongById(id, req.body);
-        const updated = await getSongByIdService(id);
 
-        if (!updated) {
+        const existing = await getSongByIdService(id);
+
+        if (!existing) {
             res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Song not found' });
             return;
         }
+
+        await updateSongById(id, req.body);
+        const updated = await getSongByIdService(id);
 
         res.status(HTTP_STATUS.OK).json(updated);
     } catch (error) {
@@ -100,12 +103,19 @@ export const uploadSongFile = async (req: Request, res: Response, next: NextFunc
             return;
         }
 
+        const existingSong = await getSongByIdService(songId);
+
+        if (!existingSong) {
+            fs.unlinkSync(req.file.path);
+            res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Song not found" });
+            return;
+        }
+
         const realType = await fromFile(req.file.path);
         const allowedMimes = ["audio/mpeg", "audio/mp4", "audio/x-m4a", "video/mp4"];
 
         if (!realType || !allowedMimes.includes(realType.mime)) {
             fs.unlinkSync(req.file.path);
-            // uses AppError so errorHandler formats it consistently
             return next(new AppError("File contents do not match an allowed type", "INVALID_FILE", HTTP_STATUS.BAD_REQUEST));
         }
 

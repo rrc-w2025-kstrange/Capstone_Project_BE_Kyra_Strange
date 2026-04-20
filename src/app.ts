@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import artistsRoutes from "./api/v1/routes/artistsRoutes";
 import albumsRoutes from './api/v1/routes/albumsRoutes';
 import songsRoutes from './api/v1/routes/songsRoutes';
+import setupSwagger from "./config/swagger";
 import {
     accessLogger,
     errorLogger,
@@ -49,6 +50,8 @@ app.get("/api/v1/health", (req, res) => {
         version: "1.0.0",
     });
 });
+
+setupSwagger(app);
 
 // Global error handling middleware
 app.use(errorHandler);
