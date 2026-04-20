@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { getAllArtistsService, getArtistByIdService, createNewArtist, updateArtistById, deleteArtistById } from "../services/artistsService";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
 import { successResponse } from "../models/responseModel";
@@ -52,23 +52,23 @@ export const createArtist = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-export const updateArtist = async (req: Request, res: Response): Promise<any> => {
+export const updateArtist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id: string = req.params.id;
-        const updateArtist = req.body;
 
-        await updateArtistById(id, updateArtist);
+        const existing = await getArtistByIdService(id);
 
-        const updatedupdateArtist = await getArtistByIdService(id);
-
-        if (!updatedupdateArtist) {
-            return res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Artist not found" });
+        if (!existing.id) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({ message: "Artist not found" });
+            return;
         }
 
-        return res.status(HTTP_STATUS.OK).json(updatedupdateArtist);
-        
-    } catch (error: any) {
-        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
+        await updateArtistById(id, req.body);
+        const updated = await getArtistByIdService(id);
+
+        res.status(HTTP_STATUS.OK).json(updated);
+    } catch (error) {
+        next(error);
     }
 };
 
