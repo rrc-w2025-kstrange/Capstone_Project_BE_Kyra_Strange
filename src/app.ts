@@ -8,6 +8,8 @@ import {
     consoleLogger,
 } from "./api/v1/middleware/logger";
 import errorHandler from "./api/v1/middleware/errorHandler";
+import adminRoutes from "./api/v1/routes/adminRoutes";
+import authRoutes from "./api/v1/routes/authRoutes";
 
 // Initialize Express application
 const app: Express = express();
@@ -35,6 +37,8 @@ app.use("/uploads", express.static("uploads", {
         }
     }
 }));
+app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 // Define a route
 app.get("/api/v1/health", (req, res) => {
