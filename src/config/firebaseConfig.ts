@@ -6,7 +6,7 @@ import * as serviceAccount from "./servicekey.json";
 
 // Initialize the Firebase app with the service account credentials
 initializeApp({
-    credential: cert(serviceAccount as ServiceAccount),
+    credential: cert({ ...serviceAccount } as ServiceAccount),
 });
 
 const auth: Auth = getAuth();

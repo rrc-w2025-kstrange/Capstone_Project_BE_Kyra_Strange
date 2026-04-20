@@ -31,7 +31,6 @@ export const setCustomClaims = async (
 
         res.status(HTTP_STATUS.OK).json(
             successResponse(
-                {},
                 `Custom claims set for user: ${uid}.`
             )
         );
