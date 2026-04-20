@@ -1,0 +1,1176 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Music API Documentation",
+    "version": "1.0.0",
+    "description": "API documentation for the Music application"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Album": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "artistId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "album_001"
+          },
+          "title": {
+            "type": "string",
+            "example": "The Dark Side of the Moon"
+          },
+          "artistId": {
+            "type": "string",
+            "example": "artist_001"
+          },
+          "releaseYear": {
+            "type": "number",
+            "example": 1973
+          },
+          "genre": {
+            "type": "string",
+            "enum": [
+              "Rock",
+              "Glam Rock",
+              "Reggae",
+              "Techno",
+              "Indie Rock",
+              "general"
+            ],
+            "example": "Rock"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-05T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-05T12:30:00Z"
+          }
+        }
+      },
+      "Artist": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "status",
+          "category",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "artist_001"
+          },
+          "name": {
+            "type": "string",
+            "example": "Joan Jett"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "passed away"
+            ],
+            "example": "active"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "Rock",
+              "Glam Rock",
+              "Reggae",
+              "Techno",
+              "Indie Rock",
+              "general"
+            ],
+            "example": "Rock"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-05T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-05T12:30:00Z"
+          }
+        }
+      },
+      "Song": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "albumId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "song_001"
+          },
+          "title": {
+            "type": "string",
+            "example": "Beautiful Day"
+          },
+          "albumId": {
+            "type": "string",
+            "example": "album_001"
+          },
+          "duration": {
+            "type": "number",
+            "example": 248,
+            "description": "Duration in seconds"
+          },
+          "filePath": {
+            "type": "string",
+            "example": "http://localhost:3000/uploads/2026-04-19T15-30-00-beautiful-day.mp3"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-05T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-05T12:30:00Z"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/v1/albums": {
+      "get": {
+        "summary": "Get all albums",
+        "description": "Returns a list of all albums ordered by creation date.",
+        "tags": [
+          "Albums"
+        ],
+        "responses": {
+          "200": {
+            "description": "Albums successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Albums retrieved"
+                    },
+                    "count": {
+                      "type": "number",
+                      "example": 3
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Album"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new album",
+        "description": "Create a new album. Requires admin role. The artistId must reference an existing artist.",
+        "tags": [
+          "Albums"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "artistId"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "The Dark Side of the Moon"
+                  },
+                  "artistId": {
+                    "type": "string",
+                    "example": "artist_001"
+                  },
+                  "releaseYear": {
+                    "type": "number",
+                    "example": 1973
+                  },
+                  "genre": {
+                    "type": "string",
+                    "enum": [
+                      "Rock",
+                      "Glam Rock",
+                      "Reggae",
+                      "Techno",
+                      "Indie Rock",
+                      "general"
+                    ],
+                    "example": "Rock"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Album successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Album created"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Album"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No token provided"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient role"
+          },
+          "404": {
+            "description": "Artist not found"
+          },
+          "500": {
+            "description": "Failed to create album"
+          }
+        }
+      }
+    },
+    "/api/v1/albums/{id}": {
+      "get": {
+        "summary": "Get an album by ID",
+        "description": "Returns a single album by its ID.",
+        "tags": [
+          "Albums"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "album_001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Album successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Album retrieved"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Album"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Album not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an album",
+        "description": "Update an existing album by ID. Requires admin role.",
+        "tags": [
+          "Albums"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "album_001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "The Dark Side of the Moon"
+                  },
+                  "artistId": {
+                    "type": "string",
+                    "example": "artist_001"
+                  },
+                  "releaseYear": {
+                    "type": "number",
+                    "example": 1973
+                  },
+                  "genre": {
+                    "type": "string",
+                    "enum": [
+                      "Rock",
+                      "Glam Rock",
+                      "Reggae",
+                      "Techno",
+                      "Indie Rock",
+                      "general"
+                    ],
+                    "example": "Rock"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Album successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Album"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No token provided"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient role"
+          },
+          "404": {
+            "description": "Album not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an album",
+        "description": "Delete an album by ID. Requires admin role.",
+        "tags": [
+          "Albums"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "album_001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Album successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "album_001 was deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No token provided"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient role"
+          },
+          "404": {
+            "description": "Album not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/artists": {
+      "get": {
+        "summary": "Get all artists",
+        "description": "Returns a list of all artists ordered by creation date.",
+        "tags": [
+          "Artists"
+        ],
+        "responses": {
+          "200": {
+            "description": "Artists successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Artists retrieved"
+                    },
+                    "count": {
+                      "type": "number",
+                      "example": 3
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Artist"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new artist",
+        "description": "Create a new artist. Requires admin role. If status or category are not provided, defaults will be applied.",
+        "tags": [
+          "Artists"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Elvis Presley"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "active",
+                      "inactive",
+                      "passed away"
+                    ],
+                    "example": "active"
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "Rock",
+                      "Glam Rock",
+                      "Reggae",
+                      "Techno",
+                      "Indie Rock",
+                      "general"
+                    ],
+                    "example": "Rock"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Artist successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Artist created"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Artist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No token provided"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient role"
+          },
+          "500": {
+            "description": "Failed to create artist"
+          }
+        }
+      }
+    },
+    "/api/v1/artists/{id}": {
+      "get": {
+        "summary": "Get an artist by ID",
+        "description": "Returns a single artist by their ID.",
+        "tags": [
+          "Artists"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "artist_001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Artist retrieved"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Artist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Artist not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an artist",
+        "description": "Update an existing artist by ID. Requires admin role.",
+        "tags": [
+          "Artists"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "artist_001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Elvis Presley"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "active",
+                      "inactive",
+                      "passed away"
+                    ],
+                    "example": "active"
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "Rock",
+                      "Glam Rock",
+                      "Reggae",
+                      "Techno",
+                      "Indie Rock",
+                      "general"
+                    ],
+                    "example": "Rock"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Artist successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artist"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No token provided"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient role"
+          },
+          "404": {
+            "description": "Artist not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an artist",
+        "description": "Delete an artist by ID. Requires admin role.",
+        "tags": [
+          "Artists"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "artist_001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "artist_001 was deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No token provided"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient role"
+          },
+          "404": {
+            "description": "Artist not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/songs": {
+      "get": {
+        "summary": "Get all songs",
+        "description": "Returns a list of all songs ordered by creation date. Songs with a linked file will include a filePath.",
+        "tags": [
+          "Songs"
+        ],
+        "responses": {
+          "200": {
+            "description": "Songs successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Songs retrieved"
+                    },
+                    "count": {
+                      "type": "number",
+                      "example": 5
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Song"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new song",
+        "description": "Create a new song linked to an existing album. Requires admin role.",
+        "tags": [
+          "Songs"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "albumId"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Beautiful Day"
+                  },
+                  "albumId": {
+                    "type": "string",
+                    "example": "album_001"
+                  },
+                  "duration": {
+                    "type": "number",
+                    "example": 248,
+                    "description": "Duration in seconds (min 30, max 900)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Song successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Song created"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Song"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No token provided"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient role"
+          },
+          "404": {
+            "description": "Album not found"
+          },
+          "500": {
+            "description": "Failed to create song"
+          }
+        }
+      }
+    },
+    "/api/v1/songs/{id}": {
+      "get": {
+        "summary": "Get a song by ID",
+        "description": "Returns a single song by its ID.",
+        "tags": [
+          "Songs"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "song_001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Song successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Song retrieved"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Song"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Song not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a song",
+        "description": "Update an existing song by ID. Requires admin role. At least one field must be provided.",
+        "tags": [
+          "Songs"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "song_001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Beautiful Day"
+                  },
+                  "albumId": {
+                    "type": "string",
+                    "example": "album_001"
+                  },
+                  "duration": {
+                    "type": "number",
+                    "example": 248,
+                    "description": "Duration in seconds (min 30, max 900)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Song successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Song"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No token provided"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient role"
+          },
+          "404": {
+            "description": "Song not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a song",
+        "description": "Delete a song by ID. Requires admin role.",
+        "tags": [
+          "Songs"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "song_001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Song successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "song_001 was deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - No token provided"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient role"
+          },
+          "404": {
+            "description": "Song not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/songs/upload": {
+      "post": {
+        "summary": "Upload a file and link it to a song",
+        "description": "Upload an MP3, M4A, or MP4 file and link it to an existing song by songId. Requires admin role. Max file size is 300MB for MP4 and 10MB for audio files.",
+        "tags": [
+          "Songs"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "songId"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The audio or video file to upload (MP3, M4A, or MP4)"
+                  },
+                  "songId": {
+                    "type": "string",
+                    "example": "song_001"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "File successfully uploaded and linked to song",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "File uploaded and linked to song"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "songId": {
+                          "type": "string",
+                          "example": "song_001"
+                        },
+                        "filename": {
+                          "type": "string",
+                          "example": "2026-04-19T15-30-00-beautiful-day.mp3"
+                        },
+                        "originalname": {
+                          "type": "string",
+                          "example": "beautiful day.mp3"
+                        },
+                        "size": {
+                          "type": "string",
+                          "example": "4.31 MB"
+                        },
+                        "path": {
+                          "type": "string",
+                          "example": "http://localhost:3000/uploads/2026-04-19T15-30-00-beautiful-day.mp3"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No file uploaded, invalid file type, or missing songId"
+          },
+          "401": {
+            "description": "Unauthorized - No token provided"
+          },
+          "403": {
+            "description": "Forbidden - Insufficient role"
+          },
+          "500": {
+            "description": "Failed to link file to song"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
