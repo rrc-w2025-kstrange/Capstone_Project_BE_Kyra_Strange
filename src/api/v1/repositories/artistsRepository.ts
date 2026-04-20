@@ -4,7 +4,10 @@ import { ArtistDTO } from "../models/artistDTO";
 import { CreateArtistRequest } from "../models/createArtistRequestModel";
 
 
-
+/**
+ * Retrieves all artists from Firestore ordered by creation date ascending.
+ * @returns Array of ArtistDTO objects, or an empty array if an error occurs
+ */
 export const getAllArtists = async (): Promise<Array<ArtistDTO> | undefined> => {
     try {
         const snapshot: QuerySnapshot = await db.collection("Artists").orderBy("createdAt", "asc").get();
@@ -38,7 +41,16 @@ export const getAllArtists = async (): Promise<Array<ArtistDTO> | undefined> => 
 };
 
 
-
+/**
+ * Adds a new artist to Firestore using a transaction to generate a sequential custom ID.
+ *
+ * Uses a counter document in the "metadata" collection to track the next ID.
+ * The transaction ensures the counter and the new artist document are written atomically,
+ * preventing duplicate IDs if multiple requests arrive simultaneously.
+ *
+ * @param artist - The artist data to store
+ * @returns The created ArtistDTO with its generated ID and timestamps
+ */
 export const addArtist = async (artist: CreateArtistRequest): Promise<ArtistDTO> => {
     const counterRef = db.collection("metadata").doc("artistsCounter");
     const artistsCollection = db.collection("Artists");
@@ -67,6 +79,11 @@ export const addArtist = async (artist: CreateArtistRequest): Promise<ArtistDTO>
 };
 
 
+/**
+ * Retrieves a single artist from Firestore by their document ID.
+ * @param id - The Firestore document ID of the artist (e.g. "artist_001")
+ * @returns The matching ArtistDTO or undefined if the document does not exist
+ */
 export const getArtistById = async (id: string): Promise<ArtistDTO | undefined> => {
     const docRef: DocumentReference = db.collection("Artists").doc(id);
 
@@ -92,7 +109,12 @@ export const getArtistById = async (id: string): Promise<ArtistDTO | undefined> 
 };
 
 
-
+/**
+ * Updates an existing artist document in Firestore.
+ * @param id - The Firestore document ID of the artist to update
+ * @param artist - The fields to update
+ * @returns void
+ */
 export const updateArtist = async (id: string, artist: CreateArtistRequest): Promise<void> => {
     const docRef: DocumentReference = db.collection("Artists").doc(id);
 
@@ -106,6 +128,11 @@ export const updateArtist = async (id: string, artist: CreateArtistRequest): Pro
 };
 
 
+/**
+ * Deletes an artist document from Firestore by their ID.
+ * @param id - The Firestore document ID of the artist to delete
+ * @returns void
+ */
 export const deleteArtist = async (id: string): Promise<void> => {
     const docRef: DocumentReference = db.collection("Artists").doc(id);
 
