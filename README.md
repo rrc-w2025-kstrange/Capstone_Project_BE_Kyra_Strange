@@ -1,4 +1,4 @@
-# 🎵 Music API — Capstone Project
+# Music API: Capstone Project
 
 A RESTful API for managing a music library built with **Node.js**, **TypeScript**, and **Express**, backed by **Firebase Firestore**. Supports artists, albums, and songs with file upload capabilities for MP3, M4A, and MP4 files.
 
