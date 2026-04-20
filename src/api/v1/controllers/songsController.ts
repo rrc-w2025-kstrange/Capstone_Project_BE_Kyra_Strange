@@ -55,13 +55,16 @@ export const createSong = async (req: Request, res: Response, next: NextFunction
 export const updateSong = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id = req.params.id;
-        await updateSongById(id, req.body);
-        const updated = await getSongByIdService(id);
 
-        if (!updated) {
+        const existing = await getSongByIdService(id);
+
+        if (!existing) {
             res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Song not found' });
             return;
         }
+
+        await updateSongById(id, req.body);
+        const updated = await getSongByIdService(id);
 
         res.status(HTTP_STATUS.OK).json(updated);
     } catch (error) {
