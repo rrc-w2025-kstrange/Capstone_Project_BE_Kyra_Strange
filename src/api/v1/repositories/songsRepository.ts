@@ -4,6 +4,10 @@ import { SongDTO } from "../models/songDTO";
 import { CreateSongRequest } from "../models/createSongRequestModel";
 
 
+/**
+ * Retrieves all songs from Firestore ordered by creation date ascending.
+ * @returns Array of SongDTO objects, or an empty array if an error occurs
+ */
 export const getAllSongs = async (): Promise<Array<SongDTO> | undefined> => {
     try {
         const snapshot: QuerySnapshot = await db.collection("Songs").orderBy("createdAt", "asc").get();
@@ -29,6 +33,11 @@ export const getAllSongs = async (): Promise<Array<SongDTO> | undefined> => {
 };
 
 
+/**
+ * Retrieves a single song from Firestore by its document ID.
+ * @param id - The Firestore document ID of the song (e.g. "song_001")
+ * @returns The matching SongDTO or undefined if the document does not exist
+ */
 export const getSongById = async (id: string): Promise<SongDTO | undefined> => {
     const docRef: DocumentReference = db.collection("Songs").doc(id);
     const doc = await docRef.get();
@@ -50,6 +59,16 @@ export const getSongById = async (id: string): Promise<SongDTO | undefined> => {
 };
 
 
+/**
+ * Adds a new song to Firestore using a transaction to generate a sequential custom ID.
+ *
+ * Uses a counter document in the "metadata" collection to track the next ID.
+ * The transaction ensures the counter and the new song document are written atomically,
+ * preventing duplicate IDs if multiple requests arrive simultaneously.
+ *
+ * @param song - The song data to store
+ * @returns The created SongDTO with its generated ID and timestamps
+ */
 export const addSong = async (song: CreateSongRequest): Promise<SongDTO> => {
     const counterRef = db.collection("metadata").doc("songsCounter");
     const songsCollection = db.collection("Songs");
@@ -77,6 +96,13 @@ export const addSong = async (song: CreateSongRequest): Promise<SongDTO> => {
 };
 
 
+/**
+ * Updates an existing song document in Firestore.
+ * Only updates filePath if it is provided, avoids overwriting an existing file link.
+ * @param id - The Firestore document ID of the song to update
+ * @param song - The fields to update
+ * @returns void
+ */
 export const updateSong = async (id: string, song: CreateSongRequest): Promise<void> => {
     const docRef: DocumentReference = db.collection("Songs").doc(id);
     const updateData: any = {
@@ -94,6 +120,11 @@ export const updateSong = async (id: string, song: CreateSongRequest): Promise<v
 };
 
 
+/**
+ * Deletes a song document from Firestore by its ID.
+ * @param id - The Firestore document ID of the song to delete
+ * @returns void
+ */
 export const deleteSong = async (id: string): Promise<void> => {
     const docRef: DocumentReference = db.collection("Songs").doc(id);
     await docRef.delete();
