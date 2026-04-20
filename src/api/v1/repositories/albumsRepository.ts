@@ -3,6 +3,11 @@ import { DocumentReference, QuerySnapshot } from "firebase-admin/firestore";
 import { AlbumDTO } from "../models/albumDTO";
 import { CreateAlbumRequest } from "../models/createAlbumRequestModel";
 
+
+/**
+ * Retrieves all albums from Firestore ordered by creation date ascending.
+ * @returns Array of AlbumDTO objects, or an empty array if an error occurs
+ */
 export const getAllAlbums = async (): Promise<Array<AlbumDTO> | undefined> => {
     try {
         const snapshot: QuerySnapshot = await db.collection("Albums").orderBy("createdAt", "asc").get();
@@ -28,6 +33,11 @@ export const getAllAlbums = async (): Promise<Array<AlbumDTO> | undefined> => {
 };
 
 
+/**
+ * Retrieves a single album from Firestore by its document ID.
+ * @param id - The Firestore document ID of the album (e.g. "album_001")
+ * @returns The matching AlbumDTO or undefined if the document does not exist
+ */
 export const getAlbumById = async (id: string): Promise<AlbumDTO | undefined> => {
     const docRef: DocumentReference = db.collection("Albums").doc(id);
     const doc = await docRef.get();
@@ -49,6 +59,16 @@ export const getAlbumById = async (id: string): Promise<AlbumDTO | undefined> =>
 };
 
 
+/**
+ * Adds a new album to Firestore using a transaction to generate a sequential custom ID.
+ *
+ * Uses a counter document in the "metadata" collection to track the next ID.
+ * The transaction ensures the counter and the new album document are written atomically,
+ * preventing duplicate IDs if multiple requests arrive simultaneously.
+ *
+ * @param album - The album data to store
+ * @returns The created AlbumDTO with its generated ID and timestamps
+ */
 export const addAlbum = async (album: CreateAlbumRequest): Promise<AlbumDTO> => {
     const counterRef = db.collection("metadata").doc("albumsCounter");
     const albumsCollection = db.collection("Albums");
@@ -77,6 +97,12 @@ export const addAlbum = async (album: CreateAlbumRequest): Promise<AlbumDTO> => 
 };
 
 
+/**
+ * Updates an existing album document in Firestore.
+ * @param id - The Firestore document ID of the album to update
+ * @param album - The fields to update
+ * @returns void
+ */
 export const updateAlbum = async (id: string, album: CreateAlbumRequest): Promise<void> => {
     const docRef: DocumentReference = db.collection("Albums").doc(id);
     await docRef.update({
@@ -89,7 +115,11 @@ export const updateAlbum = async (id: string, album: CreateAlbumRequest): Promis
 };
 
 
-
+/**
+ * Deletes an album document from Firestore by its ID.
+ * @param id - The Firestore document ID of the album to delete
+ * @returns void
+ */
 export const deleteAlbum = async (id: string): Promise<void> => {
     const docRef: DocumentReference = db.collection("Albums").doc(id);
     await docRef.delete();
