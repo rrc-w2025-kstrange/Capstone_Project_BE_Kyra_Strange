@@ -16,6 +16,6 @@
         "alwaysStrict": true,
         "types": ["node", "jest"]
     },
-    "include": ["src/**/*", "test/**/*", "config/**/*"],
+    "include": ["src/**/*", "test/**/*", "config/**/*", "scripts/**/*", "*.ts"],
     "exclude": ["node_modules", "dist"]
 }
